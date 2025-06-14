@@ -61,26 +61,26 @@ def game_logic(random_number):
     score = 0
     health = ["❤️", "❤️", "❤️"]
     health_length = len(health)
-    print(f"Health: {" ".join(health)}")
+    print(f"\nHealth: {" ".join(health)}")
 
     while not health.count("💔") == 3 and score < 5:
         guess = int(is_number("\nGuess: "))
         if guess == random_number:
-            print("Guess Right")
             break
-        elif guess > random_number:
-            print("Too HIGH")
+        if guess > random_number:
+            print("guess too HIGH")
             health_length -=1
         elif guess < random_number:
-            print("Too LOW")
             health_length -=1
+            print("guess too LOW")
+        
         health[health_length] = "💔"
-        print(f"Health: {"".join(health)}")
+        print(f"\nHealth: {" ".join(health)}")
     
-    if score == 5:
-        print('Win')
-    if health.count("💔") == 3:
-        print("GAME OVER 🥺")
+    if guess == random_number:
+        print('You Got it!!!! 🏆')
+    elif health.count("💔") == 3:
+        print("\nGAME OVER 🥺")
         
                 
 
