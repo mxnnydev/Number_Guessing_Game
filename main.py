@@ -1,34 +1,22 @@
 import random # importing the random built-in library from python
 
-# Number Guessing Game program ~ user will guess a number & keep playing until they decide to end.
+# Number Guessing Game: User keeps guessing until they choose to stop.
 
 def start():
     inital_program_message()
 
 def inital_program_message():
     print("👾 Welcome to number guessing game 👾".title())
-    begin = input("\nWould you like to begin (Y - Yes or N - No ): ").strip()
+    begin = input("\nStart the game? Enter 'Y' for Yes or 'N' for No: ").strip()
     
     # handle incorrect user input
     while not begin.lower() in ['y','yes','n','no' ]:
-        begin = input("\nINVALID INPUT: Would you like to begin (Y - Yes or N - No ): ").strip()
+        print("\nPlease enter a valid input (Enter 'Y' for Yes or 'N' for No):\n")
     
     if begin.lower() in['yes','y']:
-        collect_user_info()
+        generate_random_number()
     elif begin.lower() in ['no','n']:
-        print("Okay see you later")
-
-def collect_user_info():
-    name = input("\nWhat is your name: ").strip()
-
-    while not name.isalpha():
-        print("\nSomething went wrong let's try that again!")
-        name = input("\nWhat is your name: ").strip()
-    
-    # welcome user
-    print(f"\nWelcome {name.title()}! Let's begin 🔥")
-
-    generate_random_number()
+        print("\nSee you soon 👋\n")
 
 def is_number(prompt_text):
     user_input = input(prompt_text)
@@ -40,6 +28,7 @@ def is_number(prompt_text):
 
 
 def generate_random_number():
+    print(f"\nWelcome Let's begin 🔥")
     print("\nChoose the range of number to guess from\n")
 
     start_range = int(is_number("Start Range: "))
@@ -57,13 +46,29 @@ def correct_range(start_range, end_range):
         end_range = int(is_number("End Range: "))
     return start_range, end_range
 
+def play_again(prev_result):
+    if prev_result == "won":
+        play_again = input("\n🎉 You won! Want to play another round? (Y/N): ").strip()
+    elif prev_result == "lost":
+        play_again = input("\nGAME OVER 🥺 Would you like to play again? (Y/N): ").strip()
+    
+    # handle incorrect user input
+    while not play_again.lower() in ['y','yes','n','no' ]:
+        play_again = input("\nINVALID INPUT: Would you like to begin (Y - Yes or N - No ): ").strip()
+    
+    if play_again.lower() in['yes','y']:
+        generate_random_number()
+    elif play_again.lower() in ['no','n']:
+        print("\nSee you soon 👋\n")
+
+
+
 def game_logic(random_number):
-    score = 0
     health = ["❤️", "❤️", "❤️"]
     health_length = len(health)
     print(f"\nHealth: {" ".join(health)}")
 
-    while not health.count("💔") == 3 and score < 5:
+    while not health.count("💔") == 3:
         guess = int(is_number("\nGuess: "))
         if guess == random_number:
             break
@@ -78,15 +83,16 @@ def game_logic(random_number):
         print(f"\nHealth: {" ".join(health)}")
     
     if guess == random_number:
-        print('You Got it!!!! 🏆')
+        print("\nYou Won 🏆")
+        play_again("won")   
     elif health.count("💔") == 3:
-        print("\nGAME OVER 🥺")
+        print("\nYou Lost 💔")
+        play_again("lost")        
+
         
-                
-
-
 def main():
-    start() # start the inital program 
+    start()
 
+# Run the program only when this file is executed directly (not imported)
 if __name__ == '__main__':
     main()
