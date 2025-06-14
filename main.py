@@ -2,11 +2,8 @@ import random # importing the random built-in library from python
 
 # Number Guessing Game program ~ user will guess a number & keep playing until they decide to end.
 
-life = 3 # inital score amount
-
 def start():
     inital_program_message()
-    collect_user_info
 
 def inital_program_message():
     print("👾 Welcome to number guessing game 👾".title())
@@ -23,67 +20,69 @@ def inital_program_message():
 
 def collect_user_info():
     name = input("\nWhat is your name: ").strip()
+
+    while not name.isalpha():
+        print("\nSomething went wrong let's try that again!")
+        name = input("\nWhat is your name: ").strip()
     
     # welcome user
     print(f"\nWelcome {name.title()}! Let's begin 🔥")
 
     generate_random_number()
 
+def is_number(prompt_text):
+    user_input = input(prompt_text)
+
+    while not user_input.isdigit():
+        print("\nPlease enter a valid number.\n")
+        user_input = input(prompt_text)
+    return user_input
+
+
 def generate_random_number():
     print("\nChoose the range of number to guess from\n")
-    start_range = int(input("Starting point: "))
-    end_range = int(input("\nEnding point: "))
-    
-    random_number = random.randint(start_range,end_range)
-    
-    # call insert random number in start_game function
-    start_game(start_range,end_range,random_number)
 
-def is_valid_guess(guess):
-    if guess.isdigit():
-        return True
-    else:
-        while not guess.isdigit():
-            print("\nINVALID INPUT")
-            user_guess = input("\nGuess: ")
-        return True
+    start_range = int(is_number("Start Range: "))
+    end_range = int(is_number("End Range: "))
+
+    # verify the range is correct
+    start_range, end_range = correct_range(start_range, end_range)
+
+    game_logic(random.randint(start_range,end_range))
+
+def correct_range(start_range, end_range):
+    if not start_range < end_range:
+        print("\nStart Range must be less than End Range. Let's try that again!\n")
+        start_range = int(is_number("Start Range: "))
+        end_range = int(is_number("End Range: "))
+    return start_range, end_range
+
+def game_logic(random_number):
+    score = 0
+    health = ["❤️", "❤️", "❤️"]
+    health_length = len(health)
+    print(f"Health: {" ".join(health)}")
+
+    while not health.count("💔") == 3 and score < 5:
+        guess = int(is_number("\nGuess: "))
+        if guess == random_number:
+            print("Guess Right")
+            break
+        elif guess > random_number:
+            print("Too HIGH")
+            health_length -=1
+        elif guess < random_number:
+            print("Too LOW")
+            health_length -=1
+        health[health_length] = "💔"
+        print(f"Health: {"".join(health)}")
+    
+    if score == 5:
+        print('Win')
+    if health.count("💔") == 3:
+        print("GAME OVER 🥺")
         
-
-def score(type_score):
-    global life
-    if life < 0:
-        print("\nYou lost :( WANNA PLAY AGAIN! 🏳️")
-    if type_score == 'add':
-        life+= 1
-    elif type_score == 'sub':
-        life-= 1
-        
-
-
-def start_game(start_range, end_range,rand_num):
-    print(f"Game Life Health ❤️ ❤️ ❤️ - {life}")
-    print(f"\nStart Guess from {start_range} - {end_range}")
-    user_guess = input("Guess: ")
-
-     # after verifying valid input convert to int type
-    if is_valid_guess(user_guess):
-        user_guess = int(user_guess)
-    # check based on generated random value
-    while user_guess != rand_num:
-        if user_guess == rand_num:
-            print("You Guessed to RIGHT")
-            score('add')
-        elif user_guess > rand_num:
-            print("You Guessed to HIGH")
-            score('sub')
-        elif user_guess < rand_num:
-            print("You Guessed to LOW")
-            score('sub')
-        # if user response is WRONG ask again until lifeline remains
-        user_guess = input("Guess: ")
-        if is_valid_guess(user_guess):
-            user_guess = int(user_guess)
-    
+                
 
 
 def main():
@@ -91,10 +90,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-## Overview of things to fix 🛑
-# fix: how the game keep track of health
-# fix: how the game tell user when they win
-# fix: how the game tell user when they lose
-# fix: how the game end the game or continue 
